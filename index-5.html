@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Pipa de Agua a Domicilio</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 550px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: containerEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes containerEnter {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Seccion 1: El Gancho */
+        .section-hook {
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 15px;
+            animation: fadeSlideDown 0.6s ease 0.1s both;
+            transition: opacity 0.35s ease, max-height 0.35s ease, padding 0.35s ease, margin 0.35s ease;
+        }
+
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-hook h1 {
+            font-size: 1.7rem;
+            color: var(--primary-dark);
+            margin: 0 0 8px 0;
+            font-weight: 800;
+        }
+
+        .section-hook p {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Barra de progreso visual */
+        .progress-bar-container {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar-container.visible-flex {
+            animation: fadeSlideDown 0.45s ease both;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background-color: var(--primary);
+            background-image: linear-gradient(
+                90deg,
+                var(--primary) 0%,
+                #38bdf8 50%,
+                var(--primary) 100%
+            );
+            background-size: 200% 100%;
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            animation: shimmer 2.2s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Seccion 2: Informacion y Aviso de Privacidad */
+        .section-info {
+            background-color: #f1f5f9;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            animation: fadeSlideDown 0.6s ease 0.2s both;
+            transition: opacity 0.3s ease;
+        }
+
+        .section-info p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .privacy-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .privacy-box:has(input:checked) {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+        }
+
+        .privacy-box input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--primary);
+            transition: transform 0.15s ease;
+        }
+
+        .privacy-box input[type="checkbox"]:active {
+            transform: scale(0.85);
+        }
+
+        .privacy-box label {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            font-weight: normal;
+            cursor: pointer;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        /* Seccion 3: Llamado a la encuesta / Inicio */
+        .section-intro-survey {
+            text-align: center;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            animation: fadeSlideDown 0.6s ease 0.3s both;
+            transition: opacity 0.3s ease;
+        }
+
+        .section-intro-survey p {
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        /* Pasos de la encuesta (Wizard) centrados con caja fija */
+        .form-step {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 20px;
+            width: 100%;
+            min-height: 220px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px 20px;
+            box-sizing: border-box;
+        }
+
+        .form-step.active-step {
+            display: flex;
+            animation: stepEnterRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .form-step.active-step.step-back {
+            animation: stepEnterLeft 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .form-step.step-shake {
+            animation: stepShake 0.4s ease;
+        }
+
+        @keyframes stepEnterRight {
+            from {
+                opacity: 0;
+                transform: translateX(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes stepEnterLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes stepShake {
+            10%, 90% { transform: translateX(-2px); }
+            20%, 80% { transform: translateX(4px); }
+            30%, 50%, 70% { transform: translateX(-7px); }
+            40%, 60% { transform: translateX(7px); }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        label {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-align: center;
+        }
+
+        .helper-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: -4px 0 4px 0;
+            line-height: 1.3;
+            max-width: 400px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            text-align: center;
+            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.14);
+            transform: translateY(-1px);
+        }
+
+        textarea {
+            resize: vertical;
+            height: 90px;
+        }
+
+        #capacidadExacta.field-appear {
+            animation: fadeSlideDown 0.3s ease both;
+        }
+
+        .step-buttons {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .btn-action {
+            flex: 1;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px -4px rgba(2, 132, 199, 0.45);
+        }
+
+        .btn-action:active {
+            transform: translateY(0) scale(0.97);
+            box-shadow: none;
+        }
+
+        .btn-action::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 60%);
+            opacity: 0;
+            transform: scale(0.6);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+        }
+
+        .btn-action:active::after {
+            opacity: 1;
+            transform: scale(1.4);
+            transition: 0s;
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+            box-shadow: 0 6px 14px -4px rgba(71, 85, 105, 0.45);
+        }
+
+        .btn-action:disabled {
+            cursor: not-allowed;
+            opacity: 0.75;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-action:disabled:hover {
+            transform: none;
+        }
+
+        /* Sección de Agradecimiento Estilizada */
+        .thank-you-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 15px;
+            padding: 20px 10px;
+        }
+
+        .thank-you-section.visible-flex {
+            animation: thankYouEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes thankYouEnter {
+            from {
+                opacity: 0;
+                transform: translateY(16px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .thank-you-section h2 {
+            color: var(--primary-dark);
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .thank-you-section p {
+            color: var(--text-main);
+            font-size: 1.02rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #dcfce7;
+            color: #166534;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            animation: successPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+        }
+
+        @keyframes successPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.4) rotate(-20deg);
+            }
+            60% {
+                opacity: 1;
+                transform: scale(1.12) rotate(4deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: -2px;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContainer">
+
+    <!-- SECCION 1: EL GANCHO -->
+    <div class="section-hook" id="hookSection">
+        <h1>¿Sin agua en casa?</h1>
+        <p>Pide tu pipa</p>
+    </div>
+
+    <!-- BARRA DE PROCESO VISUAL -->
+    <div class="progress-bar-container" id="progressBarContainer">
+        <div class="progress-info">
+            <span id="progressText">Paso 1 de 7</span>
+            <span id="progressPercent">14%</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <!-- SECCION 2: INFORMACION Y TERMINOS DE PRIVACIDAD -->
+    <div class="section-info" id="infoSection">
+        <p>Esta encuesta es para saber y solicitar las pipas de agua en sus colonias, para saber si quieren este servicio para mejor comodidad de cada cliente y su colonia, sin la necesidad de estar contactando y contactando, y que todo sea desde un solo lugar.</p>
+        
+        <div class="privacy-box">
+            <input type="checkbox" id="terminos" name="terminos">
+            <label for="terminos">Acepto que mis datos proporcionados solo se utilizarán para conocer la demanda, zona de entrega y gestión de este servicio de agua.</label>
+        </div>
+    </div>
+
+    <!-- SECCION 3: INVITACION A LA ENCUESTA -->
+    <div class="section-intro-survey" id="introSurveySection">
+        <p>Ayúdanos a contestar una breve encuesta para tu agua</p>
+        <button type="button" class="btn-action" onclick="startSurvey()">Comenzar Encuesta</button>
+    </div>
+
+    <!-- FORMULARIO POR PASOS (SECCIONES DE UNO EN UNO) -->
+    <form id="waterForm" style="display: none;">
+
+        <!-- PASO 1: Nombre -->
+        <div class="form-step active-step" id="step-1">
+            <div class="form-group">
+                <label for="nombre">Nombre Completo</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Escribe tu nombre completo" autocomplete="off">
+            </div>
+            <div class="step-buttons">
+                <button type="button" class="btn-action btn-secondary" onclick="prevStep(1)">Atrás</button>
+                <button type="button" class="btn-action" onclick="nextStep(1)">Siguiente</button>
+            </div>
+        </div>
+
+        <!-- PASO 2: Telefono -->
+        <div class="form-step" id="step-2">
+            <div class="form-group">
+                <label for="telefono">Teléfono / WhatsApp</label>
+                <input type="tel" id="telefono" name="telefono" placeholder="Escribe tu número a 10 dígitos" autocomplete="off">
+            </div>
+            <div class="step-buttons">
+                <button type="button" class="btn-action btn-secondary" onclick="prevStep(2)">Atrás</button>
+                <button type="button" class="btn-action" onclick="nextStep(2)">Siguiente</button>
+            </div>
+        </div>
+
+        <!-- PASO 3: Colonia (Texto libre) -->
+        <div class="form-step" id="step-3">
+            <div class="form-group">
+                <label for="colonia">Colonia o Sector</label>
+                <input type="text" id="colonia" name="colonia" placeholder="Escribe tu colonia o sector" autocomplete="off">
+            </div>
+            <div class="step-buttons">
+                <button type="button" class="btn-action btn-secondary" onclick="prevStep(3)">Atrás</button>
+                <button type="button" class="btn-action" onclick="nextStep(3)">Siguiente</button>
+            </div>
+        </div>
+
+        <!-- PASO 4: Calle -->
+        <div class="form-step" id="step-4">
+            <div class="form-group">
+                <label for="calle">Calle</label>
+                <input type="text" id="calle" name="calle" placeholder="Escribe el nombre de tu calle" autocomplete="off">
+            </div>
+            <div class="step-buttons">
+                <button type="button" class="btn-action btn-secondary" onclick="prevStep(4)">Atrás</button>
+                <button type="button" class="btn-action" onclick="nextStep(4)">Siguiente</button>
+            </div>
+        </div>
+
+        <!-- PASO 5: Numero -->
+        <div class="form-step" id="step-5">
+            <div class="form-group">
+                <label for="numero">Número / Lote / Manzana</label>
+                <input type="text" id="numero" name="numero" placeholder="Escribe tu número o S/N" autocomplete="off">
+            </div>
+            <div class="step-buttons">
+                <button type="button" class="btn-action btn-secondary" onclick="prevStep(5)">Atrás</button>
+                <button type="button" class="btn-action" onclick="nextStep(5)">Siguiente</button>
+            </div>
+        </div>
+
+        <!-- PASO 6: Referencias -->
+        <div class="form-step" id="step-6">
+            <div class="form-group">
+                <label for="referencias">Referencias de Ubicación</label>
+                <textarea id="referencias" name="referencias" placeholder="Ej. Casa de portón negro, junto a la tiendita" autocomplete="off"></textarea>
+            </div>
+            <div class="step-buttons">
+                <button type="button" class="btn-action btn-secondary" onclick="prevStep(6)">Atrás</button>
+                <button type="button" class="btn-action" onclick="nextStep(6)">Siguiente</button>
+            </div>
+        </div>
+
+        <!-- PASO 7: Capacidad y Envio -->
+        <div class="form-step" id="step-7">
+            <div class="form-group">
+                <label for="capacidad">Capacidad Requerida</label>
+                <p class="helper-text">Seleccione una opción del menú estándar o indique los litros exactos requeridos para su suministro.</p>
+                
+                <select id="capacidad" name="capacidad" onchange="handleCapacityChange()">
+                    <option value="" disabled selected>-- Selecciona una opción o capacidad --</option>
+                    <option value="Pipa Completa (10,000L)">Pipa Completa (10,000 Litros)</option>
+                    <option value="Media Pipa (5,000L)">Media Pipa (5,000 Litros)</option>
+                    <option value="Solo Tinaco / Tambos">Solo Llenado de Tinaco / Tambos</option>
+                    <option value="OTRO">Otra cantidad exacta en litros</option>
+                </select>
+
+                <input type="text" id="capacidadExacta" name="capacidadExacta" placeholder="Ej. 3000 litros o 7m3" style="display: none; margin-top: 10px;" autocomplete="off">
+            </div>
+            <div class="step-buttons">
+                <button type="button" class="btn-action btn-secondary" onclick="prevStep(7)">Atrás</button>
+                <button type="button" class="btn-action" id="submitBtn" onclick="submitForm()">Enviar Solicitud</button>
+            </div>
+        </div>
+
+    </form>
+
+    <!-- SECCION NUEVA DE AGRADECIMIENTO -->
+    <div id="thankYouSection" class="thank-you-section">
+        <div class="success-icon">✓</div>
+        <h2>Solicitud Recibida</h2>
+        <p>Hemos registrado tu información correctamente en nuestro sistema.</p>
+        <p><strong>Permítenos analizar esta información y evaluar la zona de cobertura en tu comunidad para coordinar el servicio de manera óptima.</strong></p>
+    </div>
+
+</div>
+
+<script>
+    // URL DE GOOGLE APPS SCRIPT INTEGRADA
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxzH7E5Kb_-_i_-kXRAkFhipYn7rMhhWvCt6whxGKWD1edAbUncBpc_2B0rnZzyeRSJNg/exec";
+
+    let currentStep = 1;
+    const totalSteps = 7;
+
+    function startSurvey() {
+        const terminosCheckbox = document.getElementById('terminos');
+        if (!terminosCheckbox.checked) {
+            alert("Debes aceptar los términos y condiciones de privacidad para poder continuar con la encuesta.");
+            return;
+        }
+
+        document.getElementById('introSurveySection').style.display = 'none';
+        document.getElementById('infoSection').style.display = 'none';
+
+        const progressContainer = document.getElementById('progressBarContainer');
+        progressContainer.style.display = 'flex';
+        progressContainer.classList.add('visible-flex');
+
+        const waterForm = document.getElementById('waterForm');
+        waterForm.style.display = 'flex';
+
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const percent = Math.round((currentStep / totalSteps) * 100);
+        document.getElementById('progressText').innerText = `Paso ${currentStep} de ${totalSteps}`;
+        document.getElementById('progressPercent').innerText = `${percent}%`;
+        document.getElementById('progressFill').style.width = `${percent}%`;
+    }
+
+    function handleCapacityChange() {
+        const select = document.getElementById('capacidad');
+        const inputExacta = document.getElementById('capacidadExacta');
+        if (select.value === "OTRO") {
+            inputExacta.style.display = "block";
+            inputExacta.classList.add('field-appear');
+            inputExacta.focus();
+        } else {
+            inputExacta.style.display = "none";
+            inputExacta.classList.remove('field-appear');
+            inputExacta.value = "";
+        }
+    }
+
+    function validateStep(step) {
+        let isValid = true;
+        let fieldToCheck = null;
+
+        if (step === 1) fieldToCheck = document.getElementById('nombre');
+        if (step === 2) fieldToCheck = document.getElementById('telefono');
+        if (step === 3) fieldToCheck = document.getElementById('colonia');
+        if (step === 4) fieldToCheck = document.getElementById('calle');
+        if (step === 5) fieldToCheck = document.getElementById('numero');
+        if (step === 6) fieldToCheck = document.getElementById('referencias');
+        if (step === 7) {
+            const select = document.getElementById('capacidad');
+            const inputExacta = document.getElementById('capacidadExacta');
+            if (select.value === "") {
+                isValid = false;
+            } else if (select.value === "OTRO" && inputExacta.value.trim() === "") {
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        if (fieldToCheck && fieldToCheck.value.trim() === "") {
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    function shakeStep(step) {
+        const el = document.getElementById(`step-${step}`);
+        el.classList.remove('step-shake');
+        // Forzar reflow para poder reiniciar la animación si se repite
+        void el.offsetWidth;
+        el.classList.add('step-shake');
+        el.addEventListener('animationend', () => el.classList.remove('step-shake'), { once: true });
+    }
+
+    function nextStep(step) {
+        if (!validateStep(step)) {
+            shakeStep(step);
+            alert("Por favor completa este campo antes de continuar.");
+            return;
+        }
+
+        if (step < totalSteps) {
+            const current = document.getElementById(`step-${step}`);
+            const next = document.getElementById(`step-${currentStep = step + 1}`);
+            current.classList.remove('active-step', 'step-back');
+            next.classList.remove('step-back');
+            next.classList.add('active-step');
+            updateProgress();
+        }
+    }
+
+    function prevStep(step) {
+        if (step > 1) {
+            const current = document.getElementById(`step-${step}`);
+            currentStep = step - 1;
+            const prev = document.getElementById(`step-${currentStep}`);
+            current.classList.remove('active-step', 'step-back');
+            prev.classList.add('active-step', 'step-back');
+            updateProgress();
+        } else {
+            // Si está en el primer paso y da atrás, regresa a la intro y oculta la barra
+            document.getElementById('waterForm').style.display = 'none';
+            const progressContainer = document.getElementById('progressBarContainer');
+            progressContainer.style.display = 'none';
+            progressContainer.classList.remove('visible-flex');
+            document.getElementById('infoSection').style.display = 'flex';
+            document.getElementById('introSurveySection').style.display = 'flex';
+        }
+    }
+
+    function submitForm() {
+        if (!validateStep(7)) {
+            shakeStep(7);
+            alert("Por favor selecciona o ingresa una capacidad válida antes de enviar.");
+            return;
+        }
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="btn-loading"></span>Enviando...';
+
+        const selectVal = document.getElementById('capacidad').value;
+        const exactVal = document.getElementById('capacidadExacta').value;
+        const capacidadFinal = selectVal === "OTRO" ? `Exacto: ${exactVal}` : selectVal;
+
+        const data = {
+            nombre: document.getElementById('nombre').value,
+            telefono: document.getElementById('telefono').value,
+            colonia: document.getElementById('colonia').value,
+            calle: document.getElementById('calle').value,
+            numero: document.getElementById('numero').value,
+            referencias: document.getElementById('referencias').value,
+            capacidad: capacidadFinal,
+            terminos: "Sí Aceptó"
+        };
+
+        // Función 1: Enviar datos a Google Sheets
+        fetch(URL_APPS_SCRIPT, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(() => {
+            // Función 2: Ocultar formulario/gancho/barra y mostrar la nueva sección de agradecimiento
+            document.getElementById('waterForm').style.display = 'none';
+            document.getElementById('hookSection').style.display = 'none';
+            const progressContainer = document.getElementById('progressBarContainer');
+            progressContainer.style.display = 'none';
+            progressContainer.classList.remove('visible-flex');
+
+            const thankYou = document.getElementById('thankYouSection');
+            thankYou.style.display = 'flex';
+            thankYou.classList.add('visible-flex');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Hubo un problema al registrar la información. Por favor, inténtalo de nuevo.");
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Enviar Solicitud";
+        });
+    }
+</script>
+
+</body>
+</html>
